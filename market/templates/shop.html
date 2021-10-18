@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% assets "main_css" %}
+  <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {% endassets %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@200;300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+  <title>EZ$ & Buying | Mi Tienda</title>
+</head>
+<body>
+  <nav class="mainNav">
+    <div class="container">
+      <a href="/" class="brand">EZ$ & Buying</a>
+
+      <div class="mainNav-links">
+        {% if g.token %}
+          <i class="mainNav-item fas fa-user-circle active" id="user">
+            <!-- <div class="nameTag">{{g.username}}</div> -->
+            <nav class="userNav">
+              <a href="{{ url_for('login') }}">Mi Cuenta</a>
+              <a href="{{ url_for('logout') }}">Logout</a>
+            </nav>
+        
+          </i>
+        {% else %}
+          <i class="mainNav-item fas fa-user-circle" id="user">
+          
+            <nav class="userNav">
+              <a href="{{ url_for('login') }}">Ingresar</a>
+              <a href="{{ url_for('signup') }}">Crear cuenta</a>
+            </nav>
+          </i>
+        {% endif %}
+    
+        <a href="{{ url_for('cart')}}" class="mainNav-item" id="cart">
+          <i class="fas fa-shopping-cart"></i>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="shop">
+    <div class="container">
+      <nav class="shop-nav">
+        <a href="" class="shop-nav-link active">Mi perfil</a>
+        <a href="{{ url_for('shopProducts', id=shop.id) }}" class="shop-nav-link">Mis productos</a>
+      </nav>
+      <h2 class="shop-title">Mi Tienda</h2>
+      <h2>{{shop.name}}</h2>
+
+      <form class="shop-form">
+        <div class="shop-inputGroup">
+          <label for="name">Nombre de la tienda</label>
+          <input type="text" name="name" placeholder="{{shop.name}}">
+        </div>
+        <div class="shop-inputGroup">
+          <label for="email">Correo registrado</label>
+          <input type="email" name="email" placeholder="{{shop.email}}">
+        </div>
+        <div class="shop-inputGroup">
+          <label for="password">Cambiar contraseña</label>
+          <input type="password" name="password">
+        </div>
+        <div class="shop-messageContainer">
+          <div class="shop-message"></div>
+        </div>
+        <button class="shop-updateBtn" id="updateBtn">Guardar cambios</button>
+      </form>
+    </div>
+  </section>
+
+
+  <script src="{{url_for('static', filename='scripts/updateShopInfo.js')}}"></script>
+</body>
+</html>

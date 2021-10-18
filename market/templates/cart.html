@@ -1,0 +1,33 @@
+  {% extends 'base.html' %}
+
+  {% block title %}
+  Ez$ & Buying | Carrito
+  {% endblock %}
+  
+  {% block content %}
+
+  <section class="cart">
+    <div class="container">
+
+      <div class="cart-header">
+        <h2 class="cart-header-title">Mi Carrito</h2>
+      </div>
+  
+      <div class="cart-body">
+
+      </div>
+
+      <div class="cart-footer">
+        <div class="cart-footer-total"></div>
+        <button class="cart-footer-payBtn">Pagar</button>
+      </div>
+
+      
+  
+    </div>
+  </section>
+
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="{{url_for('static', filename='scripts/cart.js')}}"></script>
+ 
+  {% endblock %}

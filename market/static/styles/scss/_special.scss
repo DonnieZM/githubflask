@@ -1,0 +1,36 @@
+.special {
+  padding: 2rem;
+
+  .container {
+    position: relative;
+    height: 280px;
+    width: 100%;
+    background-image: url("../../img/hero.jpeg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+  }
+
+  &-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba($accent, 0.5);
+    z-index: -1;
+  }
+
+  p {
+    position: absolute;
+    right: 2rem;
+    top: 40%;
+    transform: translateY(-50%);
+    z-index: 10;
+    font-size: 3rem;
+    font-weight: bold;
+    color: #222222;
+    width: 10em;
+  }
+}

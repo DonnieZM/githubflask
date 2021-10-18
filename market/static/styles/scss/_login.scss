@@ -1,0 +1,118 @@
+.login {
+  padding-top: 3rem;
+
+  .container {
+    max-width: 500px;
+    border: solid green;
+  }
+
+  &-type {
+    margin-bottom: 1.5em;
+
+    &-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &-item {
+      border: solid black thin;
+      padding: 0.5em;
+      width: 50%;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: black;
+        color: $accent;
+      }
+
+      &:first-of-type {
+        margin-right: 1em;
+      }
+
+      &.active {
+        background-color: black;
+        color: $accent;
+      }
+    }
+  }
+
+  &-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+  }
+
+  &-inputGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+
+    input {
+      border-radius: 7px;
+      padding: 0.5rem 1rem;
+      font-family: "Poppins", sans-serif;
+      font-size: 16px;
+      border: solid transparent;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25) inset;
+    }
+  }
+
+  &-passGroup {
+    margin-top: 2.5rem;
+  }
+
+  button {
+    background-color: $accent;
+    border-radius: 26px;
+    font-family: "Poppins";
+    font-size: 1.5rem;
+    display: block;
+    margin: 2rem auto 3rem auto;
+    padding: 0.5rem 1.5rem;
+    border: none;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25),
+      0px 15px 15px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+      background-color: black;
+      color: $accent;
+    }
+  }
+
+  &-redirect {
+    display: flex;
+    justify-content: center;
+    font-size: 14px;
+    margin: 0 auto;
+    margin-top: 3rem;
+
+    a {
+      color: black;
+      margin-left: 0.5rem;
+      font-weight: bold;
+    }
+  }
+
+  &-messageContainer {
+    height: 60px;
+  }
+
+  &-message {
+    background-color: rgba(#f39898, 0.85);
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    text-align: center;
+    color: white;
+    transform: scaleY(0);
+    transition: 0.3s ease;
+
+    &.active {
+      transform: scaleY(1);
+    }
+  }
+}

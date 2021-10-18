@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Ez$ & Buying | Inicio
+{% endblock %}
+
+{% block content %}
+  <nav class="catNav">
+    <div class="container">
+      <ul class="catNav-links">
+        {% for category in categories %}
+          <div class="catNav-links-item" onclick="getByCat(this)">{{category}}</div>
+        {% endfor %}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- <section class="special">
+    <div class="container">
+      <div class="special-overlay"></div>
+      <p>Descubre nuestro catálogo de Otoño</p>
+    </div>
+  </section> -->
+
+  <section class="products">
+    <div class="container">
+
+      <!-- {% for product in products %}
+        <div class="products-item" id="{{product.id}}">
+          <div class="products-item-photo">
+            <img src="{{product.image}}" alt="{{product.title}}">
+          </div>
+          <div class="products-item-info">
+            <h4 class="products-item-info-title">{{product.title}}</h4>
+            <p class="products-item-info-price">{{product.price}}</p>
+          </div>
+        </div>
+      {% endfor %} -->
+
+    </div>
+  </section>
+
+
+  <script src="{{url_for('static', filename='scripts/getProducts.js')}}"></script>
+  {% endblock %}
