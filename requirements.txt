@@ -11,3 +11,8 @@ six==1.16.0
 SQLAlchemy==1.4.25
 webassets==2.0
 Werkzeug==2.0.2
+flask-marshmallow
+jwt 
+MyJWT
+stripe
+gunicorn

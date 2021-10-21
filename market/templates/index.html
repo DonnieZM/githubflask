@@ -1,45 +1,57 @@
-{% extends 'base.html' %}
-
-{% block title %}
-Ez$ & Buying | Inicio
-{% endblock %}
-
+{% extends 'base.html' %} {% block title %} Ez$ & Buying | Inicio {% endblock %}
 {% block content %}
-  <nav class="catNav">
-    <div class="container">
-      <ul class="catNav-links">
-        {% for category in categories %}
-          <div class="catNav-links-item" onclick="getByCat(this)">{{category}}</div>
-        {% endfor %}
-      </ul>
+<nav class="catNav">
+  <div class="container">
+    <ul class="catNav-links">
+      <!--{% for category in categories %}
+      <div class="catNav-links-item" onclick="getByCat(this)">{{category}}</div>
+      {% endfor %}-->
+    </ul>
+  </div>
+</nav>
+
+<section class="search">
+  <div class="container">
+    <div class="search-inputGroup">
+      <input
+        type="text"
+        name="search"
+        placeholder="Qué estás buscando hoy?"
+        id="searchInput"
+      />
+      <button id="searchBtn">Encontrar</button>
     </div>
-  </nav>
 
-  <!-- <section class="special">
-    <div class="container">
-      <div class="special-overlay"></div>
-      <p>Descubre nuestro catálogo de Otoño</p>
+    <div class="search-cognitive" id="cogBtn">
+      <i class="fas fa-camera"></i>
     </div>
-  </section> -->
+  </div>
+</section>
 
-  <section class="products">
-    <div class="container">
-
-      <!-- {% for product in products %}
-        <div class="products-item" id="{{product.id}}">
-          <div class="products-item-photo">
-            <img src="{{product.image}}" alt="{{product.title}}">
-          </div>
-          <div class="products-item-info">
-            <h4 class="products-item-info-title">{{product.title}}</h4>
-            <p class="products-item-info-price">{{product.price}}</p>
-          </div>
-        </div>
-      {% endfor %} -->
-
+<section class="modal">
+  <div class="modal-container">
+    <i class="fas fa-times" id="closeModal"></i>
+    <h2 class="modal-title">Sube una foto y busca productos similares</h2>
+    <form
+      action="/upload-image"
+      method="POST"
+      enctype="multipart/form-data"
+      class="modal-photoContainer"
+    >
+      <label for="imgInput" class="modal-photoContainer-uploadBtn"
+        >Subir foto</label
+      >
+      <input type="file" name="image" id="imgInput" />
+    </form>
+    <div class="modal-buttonRow">
+      <button class="searchBtn" id="cogSearch">Buscar</button>
     </div>
-  </section>
+  </div>
+</section>
 
+<section class="products">
+  <div class="container"></div>
+</section>
 
-  <script src="{{url_for('static', filename='scripts/getProducts.js')}}"></script>
-  {% endblock %}
+<script src="{{url_for('static', filename='scripts/getProducts.js')}}"></script>
+{% endblock %}

@@ -124,11 +124,30 @@ async function confirmDelete(e) {
 }
 
 function cancelDelete(e) {
+  logEvent('cancelDeleteProduct')
   const parent = e.target.parentElement.parentElement
-  parent.remove()
-
- 
+  parent.remove() 
 }
+
+
+async function logEvent(eventName) {
+  console.log(eventName)
+  try {
+    const res = await fetch('/event', {
+      method: 'POST', 
+      body: JSON.stringify({eventName}),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const data = await res.json()
+
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+
 
 
 getProducts()

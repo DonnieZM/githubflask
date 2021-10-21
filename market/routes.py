@@ -11,7 +11,7 @@ import os
 import uuid
 # import urllib.request
 from market import db
-from market.models import User, Product, Shop, Category
+from market.models import User, Product, Shop, Category, Event
 from market.models import ProductSchema, ShopSchema
 from market.middleware import checkUser, checkShop
 import stripe
@@ -34,7 +34,7 @@ def index():
 # FUNCIÓN: cargar todos los productos
 # HTML: index.html
 # JS: getProducts.js
-@app.route('/products')
+@app.route('/products', methods=['GET'])
 def getProducts():
     category = request.args.get('category')
     if not category:
@@ -44,6 +44,19 @@ def getProducts():
     else:
         productsRequest = requests.get('https://fakestoreapi.com/products/category/'+category)
         products = productsRequest.content
+    return jsonify(products)
+
+
+# FUNCIÓN: cargar productos segun barra de busqueda
+# HTML: index.html
+# JS: getProducts.js
+@app.route('/products', methods=['POST'])
+def searchProducts():
+    data = request.json
+    search = data.get('search')
+    searchproducts = Product.query.filter(Product.name.contains(search)).all()
+    product_schema = ProductSchema(many=True)
+    products = product_schema.dump(searchproducts)
     return jsonify(products)
 
 
@@ -95,7 +108,7 @@ def login_submit():
     hashed = existingUser.password_hash.encode()
     if bcrypt.checkpw(password, hashed):
         id = existingUser.id
-        token = jwt.encode({'id':id}, app.config['SECRET_KEY'], algorithm='HS256') #falta agregar expiresIn
+        token = jwt.encode({'id':id, 'type': type}, app.config['SECRET_KEY'], algorithm='HS256') #falta agregar expiresIn
         
         return jsonify({'token': token, 'status': 200, 'redirectTo': redirectTo})
     else:
@@ -108,7 +121,8 @@ def login_submit():
 # status: incompleto
 @app.route('/logout', methods=['GET'])
 def logout():
-    Response.delete_cookie('ezjwt', path='/')
+    # Response.delete_cookie('ezjwt', path='/')
+    return 'bye'
 
 
 # FUNCIÓN: mostrar página de Crear cuenta
@@ -150,6 +164,7 @@ def signup_submit():
         db.session.commit()
         created = User.query.filter_by(email=email).first()
         redirectTo = '/'
+        type = 'user'
     else:
         newShop = Shop(name=username, email=email, password_hash=hashed)
         db.session.add(newShop)
@@ -157,10 +172,11 @@ def signup_submit():
         created = Shop.query.filter_by(email=email).first()
         print('created: ', created)
         redirectTo = f'/shop/{created.id}'
+        type = 'shop'
 
     # Generar JWT
     id = created.id
-    token = jwt.encode({id: id}, app.config['SECRET_KEY'], algorithm='HS256') #falta agregar expiresIn
+    token = jwt.encode({id: id, type: type}, app.config['SECRET_KEY'], algorithm='HS256') #falta agregar expiresIn
 
     # Regresar token y donde redireccionar
     return jsonify({'token': token, 'redirectTo': redirectTo})
@@ -300,7 +316,7 @@ def createProduct(id):
     return jsonify({'message': 'Tu producto ha sido creado.'})
 
 
-# FUNCIÓN: subir foto de producto
+# FUNCIÓN: subir foto de producto de tienda
 # HTML: shopCreateProduct.html
 # JS: createProduct.js
 @app.route('/upload-image', methods=['POST'])
@@ -349,3 +365,78 @@ def createAll():
     db.create_all()
     return 'ok'
 
+
+# FUNCIÓN: subir foto de producto para cognitivo
+# HTML: index.html
+# JS: getProducts.js
+@app.route('/upload-cogImage', methods=['POST'])
+def uploadCogImg():
+    print('upload image start')
+    if request.files:
+        image = request.files['image']
+        extension = image.filename.split('.')[1]
+        # crear nombre unico para la imagen
+        newFilename = 'cogImage' + '.'+ extension
+        image.filename = newFilename
+        # guardar archivo
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        image.save(os.path.join(basedir, app.config['IMAGE_UPLOADS'], image.filename))
+    return jsonify(newFilename)
+
+
+# FUNCIÓN: COGNITIVO
+# HTML: index.html
+@app.route('/cognitivo')
+def cognitivo():
+    skey = '9019154e7a1b4d8db3a847658beb3f6c'
+    endpoint = 'https://southcentralus.api.cognitive.microsoft.com/'
+    cognitivo_url = endpoint + "/vision/v3.2/analyze?visualFeatures=Objects"
+    documents = {"url":"https://localhost:5000/static/cogImage.jpg"}
+
+    _headers = {"Ocp-Apim-Subscription-Key": skey, 'Content-Type': 'application/octet-stream'}
+    imageName = 'cogImage.jpg'
+
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    imgFile = os.path.join(basedir, app.config['IMAGE_UPLOADS'], imageName)
+    with open(imgFile, 'rb') as f:
+        data = f.read()
+    _response=requests.post(cognitivo_url, headers=_headers, data=data)
+    objects = _response.json()
+    results = []
+
+    print('objects: ', objects)
+
+    for object in objects['objects']:
+         results.append(object['object'])
+         finalproducts = []
+    for result in results:
+         queriedProducts = Product.query.filter(Product.name.contains(result)).all()
+         print('queried products: ', queriedProducts)
+         if len(queriedProducts) < 1:
+             print('empty')
+         else:
+             for queriedProduct in queriedProducts:
+                 finalproducts.append(queriedProduct)
+
+    product_schema = ProductSchema(many=True)
+    products = product_schema.dump(finalproducts)
+    
+    return jsonify(products)
+    return 'ok'
+
+
+# FUNCIÓN: Guardar bitácora de eventos de usuario
+# HTML: cualquiera
+# JS: cualquiera que integre función logEvent()
+@app.route('/event', methods=['POST'])
+def logEvent():
+    data = request.json
+    event = data.get('eventName')
+    token = request.cookies.get('ezjwt')
+    decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
+    id = decoded.get('id')
+    type = decoded.get('type')
+    newEvent = Event(name=event, user_type=type, user_id=id)
+    db.session.add(newEvent)
+    db.session.commit()
+    return jsonify(id, type)

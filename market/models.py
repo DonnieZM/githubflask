@@ -50,6 +50,11 @@ class ShopSchema(ma.SQLAlchemySchema):
     name = ma.auto_field()
     email = ma.auto_field()
 
+class Event(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(length=50), nullable=False)
+    user_id = db.Column(db.Integer())
+    user_type = db.Column(db.String(length=15))
 
 
 db.create_all()
